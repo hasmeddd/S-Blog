@@ -2,10 +2,12 @@
 import BaseButton from "@/components/BaseButton.vue";
 import axios from "axios";
 import { handleError, ref, onMounted } from "vue";
+import Swal from "sweetalert2";
 
 const titleArticle = ref("");
 const descArticle = ref("");
 const error = ref(false);
+const errorMessage = ref("");
 
 const listArticle = ref([]);
 const getAllArticle = () => {
@@ -24,30 +26,56 @@ onMounted(() => {
 });
 
 const checkLength = () => {
-  if (titleArticle.value.length > 300) {
+  if (!titleArticle.value.trim()) {
+    errorMessage.value = "Tiêu đề không được để trống!";
+    error.value = true;
+  } else if (titleArticle.value.length < 10) {
+    errorMessage.value = "Tiêu đề phải có ít nhất 10 ký tự!";
+    error.value = true;
+  } else if (titleArticle.value.length > 300) {
+    errorMessage.value = "Tiêu đề không được vượt quá 300 ký tự!";
     error.value = true;
     titleArticle.value = titleArticle.value.slice(0, 300);
   } else {
+    errorMessage.value = "";
     error.value = false;
   }
 };
 
 const handleSubmit = () => {
-  const formData = {
-    title: titleArticle._value,
-    desc: descArticle._value,
-  };
+  checkLength(); // Kiểm tra lỗi trước khi thực hiện
 
-  axios
-    .post(import.meta.env.VITE_BASE_API + "/s-blog", formData)
-    .then(function (response) {
-      console.log("handleSubmit: " + response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  if (error.value) {
+    return; // Dừng lại nếu có lỗi
+  }
+  Swal.fire({
+    title: "Xác nhận tạo bài viết",
+    text: "Bạn có chắc chắn muốn tạo bài viết này không?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Đồng ý",
+    cancelButtonText: "Hủy",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const formData = {
+        title: titleArticle.value,
+        desc: descArticle.value,
+      };
 
-  console.log(formData);
+      axios
+        .post(import.meta.env.VITE_BASE_API + "/s-blog", formData)
+        .then((response) => {
+          console.log("handleSubmit: " + response);
+          Swal.fire("Thành công!", "Bài viết đã được tạo.", "success");
+          titleArticle.value = "";
+          descArticle.value = "";
+        })
+        .catch((error) => {
+          console.error(error);
+          Swal.fire("Lỗi!", "Đã xảy ra lỗi khi tạo bài viết.", "error");
+        });
+    }
+  });
 };
 </script>
 
@@ -65,7 +93,7 @@ const handleSubmit = () => {
             @input="checkLength"
           />
           <span class="quantity">{{ titleArticle.length }}/300</span>
-          <p v-if="error" class="error">Bạn chỉ được nhập tối đa 300 ký tự!</p>
+          <p v-if="error" class="error">{{ errorMessage }}</p>
         </div>
         <div class="content">
           <span class="title">Content</span>
