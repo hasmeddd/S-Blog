@@ -3,6 +3,7 @@ import About from "../pages/About.vue";
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import CreatePage from "@/pages/CreatePage.vue";
 import DetailArticle from "@/pages/DetailArticle.vue";
+import ManagerArticle from "@/pages/ManagerArticle.vue";
 
 export const routes = [
   {
@@ -29,6 +30,12 @@ export const routes = [
         path: "/article/:id",
         name: "article-details",
         component: DetailArticle,
+      },
+      {
+        path: "/manager-article/",
+        name: "manager-article",
+        component: ManagerArticle,
+        meta: { headerColor: "var(--Bg-color)", hideFooter: true },
       },
     ],
   },

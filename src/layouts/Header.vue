@@ -19,7 +19,7 @@ import BaseButton from "@/components/BaseButton.vue";
           </li>
         </ul>
         <router-link to="/create-article"
-          ><BaseButton title="Create"></BaseButton
+          ><BaseButton title="Create" class="create-article"></BaseButton
         ></router-link>
       </nav>
     </div>

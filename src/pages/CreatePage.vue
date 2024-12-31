@@ -43,10 +43,10 @@ const checkLength = () => {
 };
 
 const handleSubmit = () => {
-  checkLength(); // Kiểm tra lỗi trước khi thực hiện
+  checkLength();
 
   if (error.value) {
-    return; // Dừng lại nếu có lỗi
+    return;
   }
   Swal.fire({
     title: "Xác nhận tạo bài viết",
@@ -83,7 +83,16 @@ const handleSubmit = () => {
   <div class="container">
     <div class="create-page">
       <div class="create-post">
-        <h2 class="create">Create Post</h2>
+        <div class="row">
+          <h2 class="create">Create Post</h2>
+          <router-link to="/manager-article"
+            ><BaseButton
+              title="Manager Post"
+              class="manager-article"
+            ></BaseButton
+          ></router-link>
+        </div>
+
         <div class="head">
           <span class="title">Title</span>
           <input
@@ -133,6 +142,15 @@ const handleSubmit = () => {
 .create-post {
   width: 776px;
   height: 390px;
+}
+.create-post .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.manager-article {
+  width: 150px;
+  height: 40px;
 }
 
 .create-post .create {
